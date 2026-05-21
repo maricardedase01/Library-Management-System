@@ -1,55 +1,62 @@
-"""
-Book class for the Library Management System
-"""
+"""Book class for the Library Management System."""
+
+from datetime import datetime
 
 
 class Book:
-    """Represents a book in the library"""
-    
-    def __init__(self, book_id, title, author, isbn, quantity):
+    """Represents a book in the library."""
+
+    def __init__(self, isbn, title, author, quantity):
         """
-        Initialize a book with given details
-        
+        Initialize a Book object.
+
         Args:
-            book_id (str): Unique identifier for the book
-            title (str): Title of the book
-            author (str): Author of the book
-            isbn (str): ISBN of the book
-            quantity (int): Available quantity of the book
+            isbn (str): Unique ISBN identifier
+            title (str): Book title
+            author (str): Book author
+            quantity (int): Number of copies available
         """
-        self.book_id = book_id
+        self.isbn = isbn
         self.title = title
         self.author = author
-        self.isbn = isbn
         self.quantity = quantity
-        self.total_quantity = quantity
-    
-    def decrease_quantity(self):
-        """Decrease the available quantity when a book is borrowed"""
-        if self.quantity > 0:
-            self.quantity -= 1
-            return True
-        return False
-    
-    def increase_quantity(self):
-        """Increase the available quantity when a book is returned"""
-        self.quantity += 1
-        return True
-    
-    def is_available(self):
-        """Check if the book is available for borrowing"""
-        return self.quantity > 0
-    
-    def get_available_count(self):
-        """Get the current available count of the book"""
-        return self.quantity
-    
+        self.created_at = datetime.now()
+
     def __str__(self):
-        """String representation of the book"""
-        return (f"Book(ID: {self.book_id}, Title: {self.title}, "
-                f"Author: {self.author}, ISBN: {self.isbn}, "
-                f"Available: {self.quantity}/{self.total_quantity})")
-    
+        """Return string representation of the book."""
+        return f"ISBN: {self.isbn} | Title: {self.title} | Author: {self.author} | Quantity: {self.quantity}"
+
     def __repr__(self):
-        """Developer-friendly representation of the book"""
-        return self.__str__()
+        """Return detailed representation of the book."""
+        return f"Book(isbn='{self.isbn}', title='{self.title}', author='{self.author}', quantity={self.quantity})"
+
+    def increase_quantity(self, amount):
+        """
+        Increase the quantity of the book.
+
+        Args:
+            amount (int): Number of copies to add
+        """
+        if amount <= 0:
+            raise ValueError("Amount must be positive")
+        self.quantity += amount
+
+    def decrease_quantity(self, amount):
+        """
+        Decrease the quantity of the book.
+
+        Args:
+            amount (int): Number of copies to remove
+
+        Raises:
+            ValueError: If quantity would go negative
+        """
+        if amount <= 0:
+            raise ValueError("Amount must be positive")
+        if self.quantity < amount:
+            raise ValueError(f"Cannot decrease quantity. Available: {self.quantity}, Requested: {amount}")
+        self.quantity -= amount
+
+    def is_available(self):
+        """Check if the book is available for borrowing."""
+        return self.quantity > 0

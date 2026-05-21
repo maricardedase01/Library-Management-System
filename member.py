@@ -1,58 +1,73 @@
-"""
-Member class for the Library Management System
-"""
+"""Member class for the Library Management System."""
+
+from datetime import datetime
+import uuid
 
 
 class Member:
-    """Represents a library member"""
-    
-    MAX_BOOKS_ALLOWED = 5
-    
-    def __init__(self, member_id, name, email, phone):
+    """Represents a library member."""
+
+    MAX_BOOKS = 5  # Maximum books a member can borrow
+
+    def __init__(self, name, email):
         """
-        Initialize a member with given details
-        
+        Initialize a Member object.
+
         Args:
-            member_id (str): Unique identifier for the member
-            name (str): Name of the member
-            email (str): Email address of the member
-            phone (str): Phone number of the member
+            name (str): Member's full name
+            email (str): Member's email address
         """
-        self.member_id = member_id
+        self.member_id = str(uuid.uuid4())[:8]
         self.name = name
         self.email = email
-        self.phone = phone
-        self.borrowed_books = []
-    
-    def add_borrowed_book(self, loan):
-        """Add a borrowed book to member's list"""
-        self.borrowed_books.append(loan)
-    
-    def remove_borrowed_book(self, loan):
-        """Remove a returned book from member's list"""
-        if loan in self.borrowed_books:
-            self.borrowed_books.remove(loan)
-            return True
-        return False
-    
-    def get_borrowed_books_count(self):
-        """Get the count of currently borrowed books"""
-        return len(self.borrowed_books)
-    
-    def can_borrow_more(self):
-        """Check if the member can borrow more books"""
-        return self.get_borrowed_books_count() < self.MAX_BOOKS_ALLOWED
-    
-    def get_borrowed_books(self):
-        """Get list of currently borrowed books"""
-        return self.borrowed_books.copy()
-    
+        self.joined_at = datetime.now()
+        self.borrowed_books = []  # List of ISBNs currently borrowed
+
     def __str__(self):
-        """String representation of the member"""
-        return (f"Member(ID: {self.member_id}, Name: {self.name}, "
-                f"Email: {self.email}, Phone: {self.phone}, "
-                f"Borrowed: {self.get_borrowed_books_count()}/{self.MAX_BOOKS_ALLOWED})")
-    
+        """Return string representation of the member."""
+        return f"ID: {self.member_id} | Name: {self.name} | Email: {self.email} | Books Borrowed: {len(self.borrowed_books)}"
+
     def __repr__(self):
-        """Developer-friendly representation of the member"""
-        return self.__str__()
+        """Return detailed representation of the member."""
+        return f"Member(id='{self.member_id}', name='{self.name}', email='{self.email}')"
+
+    def can_borrow(self):
+        """
+        Check if the member can borrow more books.
+
+        Returns:
+            bool: True if member can borrow, False otherwise
+        """
+        return len(self.borrowed_books) < self.MAX_BOOKS
+
+    def add_borrowed_book(self, isbn):
+        """
+        Add a borrowed book to the member's list.
+
+        Args:
+            isbn (str): ISBN of the book
+
+        Raises:
+            ValueError: If member has reached borrowing limit
+        """
+        if not self.can_borrow():
+            raise ValueError(f"Member has reached maximum borrowing limit of {self.MAX_BOOKS}")
+        self.borrowed_books.append(isbn)
+
+    def remove_borrowed_book(self, isbn):
+        """
+        Remove a returned book from the member's list.
+
+        Args:
+            isbn (str): ISBN of the book
+
+        Raises:
+            ValueError: If book is not in borrowed list
+        """
+        if isbn not in self.borrowed_books:
+            raise ValueError(f"Book with ISBN {isbn} is not borrowed by this member")
+        self.borrowed_books.remove(isbn)
+
+    def get_borrowed_count(self):
+        """Get the number of books currently borrowed by this member."""
+        return len(self.borrowed_books)

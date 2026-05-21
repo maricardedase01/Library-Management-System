@@ -1,38 +1,41 @@
-"""
-Custom exceptions for the Library Management System
-"""
+"""Custom exceptions for the Library Management System."""
 
 
 class LibraryException(Exception):
-    """Base exception for library operations"""
+    """Base exception class for library operations."""
     pass
 
 
-class BookNotFoundError(LibraryException):
-    """Raised when a book is not found in the library"""
+class BookNotFound(LibraryException):
+    """Raised when a book is not found in the library."""
     pass
 
 
-class MemberNotFoundError(LibraryException):
-    """Raised when a member is not found in the library"""
+class MemberNotFound(LibraryException):
+    """Raised when a member is not found in the library."""
     pass
 
 
-class BookNotAvailableError(LibraryException):
-    """Raised when a book is not available for loan"""
+class InvalidLoan(LibraryException):
+    """Raised when a loan operation is invalid."""
     pass
 
 
-class MemberLimitExceededError(LibraryException):
-    """Raised when a member exceeds their loan limit"""
+class BorrowingLimitExceeded(LibraryException):
+    """Raised when a member exceeds their borrowing limit."""
     pass
 
 
-class InvalidLoanError(LibraryException):
-    """Raised when loan operation is invalid"""
+class InsufficientInventory(LibraryException):
+    """Raised when there are not enough copies of a book."""
     pass
 
 
-class OverdueLoanError(LibraryException):
-    """Raised when trying to perform operations on overdue loans"""
+class BookAlreadyExists(LibraryException):
+    """Raised when attempting to add a book that already exists."""
+    pass
+
+
+class MemberAlreadyExists(LibraryException):
+    """Raised when attempting to register a member that already exists."""
     pass
